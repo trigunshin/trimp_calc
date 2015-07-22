@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en" ng-app='trimpCalcApp'>
+<head>
+    <meta charset="utf-8">
+    <title>Trimp calc</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.0/lodash.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.js"></script>
+    
+    <script src="static/js/lz-string.min.js"></script>
+    <script src="static/js/defaults.js"></script>
+    <script src="static/js/app.js"></script>
+</head>
+<body ng-controller="TrimpCalcCtrl">
+    <!-- can expose some base settings?...
+    <div class='row'>
+        <div class='col-md-5 col-md-offset-3'>
+            <table id="defaults_table" class='table table-condensed'>
+                <thead>
+                    <tr>
+                        <th><span>Setting Name</span></th>
+                        <th><span>Value</span></th>
+                    </tr>
+                </thead>
+                <tbody id="defaults_body">
+                    <tr>
+                        <td><span>Health</span></td>
+                        <td><input id="defaults_prestige_health" onfocus="this.select()" onmouseup="return false" type='text' ng-model="base_prestige.health"></input></td>
+                    </tr>
+                    <tr>
+                        <td><span>Attack</span></td>
+                        <td><input id="defaults_prestige_attack" onfocus="this.select()" onmouseup="return false" type='text' ng-model="base_prestige.attack"></input></td>
+                    </tr>
+                    <tr>
+                        <td><span>Cost</span></td>
+                        <td><input id="defaults_prestige_cost" onfocus="this.select()" onmouseup="return false" type='text' ng-model="base_prestige.cost"></input></td>
+                    </tr>
+                    <tr>
+                        <td><span>Block</span></td>
+                        <td><input id="defaults_prestige_block" onfocus="this.select()" onmouseup="return false" type='text' ng-model="base_prestige.block"></input></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    -->
+    <div class='row'>
+        <div class='col-md-offset-4 col-md-2'>
+            <input id="savedata" onfocus="this.select()" onmouseup="return false" type='text' ng-model="save_data"></input>
+            <input type="button" value="Import" ng-click="import(save_data)"></input>
+        </div>
+        <div class='col-md-2'>
+            <span>Supports versions 1.04, 1.05</span>
+        </div>
+    </div>
+    <div id='calcs' ng-repeat="pairs in show_items">
+        <div class='row'>
+            <div class='col-md-2 col-md-offset-4 text-center'>
+                <h4><strong>{{ pairs[0] }}</strong></h4>
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col-md-5 col-md-offset-3'>
+                <table id="thumb_ancient_tbl" class='table table-condensed'>
+                    <thead>
+                        <tr>
+                            <th><span>Item Name</span></th>
+                            <th><span>Level</span></th>
+                            <th><span>Value</span></th>
+                            <th><span>Cost</span></th>
+                            <th><span>Cost/Value</span></th>
+                            <th><span>Upgrade's Cost/Val</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="ancient_table_body">
+                        <tr ng-repeat="name in pairs[1] | filter:data.equipment[name].locked"
+                        ng-class="data.equipment[name].is_best ? 'success' : ''">
+                            <td><span>{{ name }} {{data.equipment[name].prestige||''}} </span></td>
+                            <td><span>{{ data.equipment[name].level||0 }}</pan></td>
+                            <td><span>{{ data.equipment[name].display_value||0 }}</pan></td>
+                            <td><span>{{ data.equipment[name].current_price||0 }}</span></td>
+                            <td><span>{{ data.equipment[name].current_price / data.equipment[name].display_value || 0 | number:0}}</span></td>
+                            <td><span>{{ data.equipment[name].upgrade_efficiency||0 | number:0 }}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
