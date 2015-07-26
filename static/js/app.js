@@ -43,19 +43,23 @@ clickerCalcs.controller('TrimpCalcCtrl', function($scope) {
         $scope.data.global.prestige = $scope.base_prestige;
 
         _.each(_.keys($scope.base_equipment), function(equip_name) {
+            // set defaults; these are zeroed out in the save data
             var equip_data = $scope.data.equipment[equip_name];
             var base_data = $scope.base_equipment[equip_name];
             equip_data.cost = base_data.cost;
+            // bring the prestiges up to par
             if(equip_data.prestige > 1) {
                 for(var i=1,iLen=equip_data.prestige;i<iLen;i++) {
                     $scope.prestigeEquipment(equip_name, true, true);
                 }
             }
+            // insert some display values
             equip_data.name = equip_name;
             equip_data.current_price = $scope._item_price(equip_data);
             equip_data.display_value = Math.max(0, $scope._get_display_value(equip_data));
             equip_data.upgrade_efficiency = $scope.getNextPrestigeCost(equip_data) / $scope.getNextPrestigeValue(equip_data);
         });
+        // calculate the best equipment in their classes
         var best_wep = _.reduce($scope.weapons, $scope._get_best_item, ['', Number.MAX_VALUE], this);
         $scope.data.equipment[best_wep[0]].is_best = true;
         var best_armor = _.reduce($scope.armor, $scope._get_best_item, ['', Number.MAX_VALUE], this);
