@@ -53,11 +53,17 @@ clickerCalcs.controller('TrimpCalcCtrl', function($scope) {
                     $scope.prestigeEquipment(equip_name, true, true);
                 }
             }
-            // insert some display values
+            // simple displays
             equip_data.name = equip_name;
             equip_data.current_price = $scope._item_price(equip_data);
             equip_data.display_value = Math.max(0, $scope._get_display_value(equip_data));
-            equip_data.upgrade_efficiency = $scope.getNextPrestigeCost(equip_data) / $scope.getNextPrestigeValue(equip_data);
+
+            // calculate prestige values
+            var prestige_value = $scope.getNextPrestigeValue(equip_data);
+            var prestige_cost = $scope.getNextPrestigeCost(equip_data);
+            equip_data.upgrade_efficiency = prestige_cost / prestige_value;
+            equip_data.prestige_surpass = Math.ceil(equip_data.display_value * equip_data.level / prestige_value);
+            equip_data.prestige_cost = prestige_cost * equip_data.prestige_surpass;
         });
         // calculate the best equipment in their classes
         var best_wep = _.reduce($scope.weapons, $scope._get_best_item, ['', Number.MAX_VALUE], this);
@@ -140,9 +146,14 @@ clickerCalcs.controller('TrimpCalcCtrl', function($scope) {
         var toReturn = Math.round(equipment[stat] * Math.pow(1.19, ((equipment.prestige) * $scope.data.global.prestige[stat]) + 1));
         return toReturn;
     }
-});
 
-_.templateSettings.variable = "rc";
+    // initialize tooltip values
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    });
+    // initialize underscore/lodash templates
+    // _.templateSettings.variable = "rc";
+});
 
 
 

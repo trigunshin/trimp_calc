@@ -73,16 +73,18 @@
             </div>
         </div>
         <div class='row'>
-            <div class='col-md-5 col-md-offset-3'>
+            <div class='col-md-7 col-md-offset-2'>
                 <table id="thumb_ancient_tbl" class='table table-condensed'>
                     <thead>
                         <tr>
                             <th><span>Item Name</span></th>
-                            <th><span>Level</span></th>
-                            <th><span>Value</span></th>
-                            <th><span>Cost</span></th>
-                            <th><span>Cost/Value</span></th>
-                            <th><span>Upgrade's Cost/Val</span></th>
+                            <th><span data-toggle="tooltip" data-placement="top" title="Current level.">Level</span></th>
+                            <th><span data-toggle="tooltip" data-placement="top" title="Next level's value">Value</span></th>
+                            <th><span data-toggle="tooltip" data-placement="top" title="Next level's cost">Cost</span></th>
+                            <th><span data-toggle="tooltip" data-placement="top" title="Next level's efficiency">Cost/Value</span></th>
+                            <th><span data-toggle="tooltip" data-placement="top" title="Upgrade's efficiency.">Upgrade's Cost/Val</span></th>
+                            <th><span data-toggle="tooltip" data-placement="top" title='When does prestige value surpass current value?'>Target Upgrade Level</abbr></span></th>
+                            <th><span data-toggle="tooltip" data-placement="top" title='Cost to level upgrade to target.'>Upgrade Leveling Cost</span></th>
                         </tr>
                     </thead>
                     <tbody id="ancient_table_body">
@@ -90,10 +92,12 @@
                         ng-class="data.equipment[name].is_best ? 'success' : ''">
                             <td><span>{{ name }} {{data.equipment[name].prestige||''}} </span></td>
                             <td><span>{{ data.equipment[name].level||0 }}</pan></td>
-                            <td><span>{{ data.equipment[name].display_value||0 }}</pan></td>
-                            <td><span>{{ data.equipment[name].current_price||0 }}</span></td>
+                            <td><span>{{ data.equipment[name].display_value||0 | number:0 }}</pan></td>
+                            <td><span>{{ data.equipment[name].current_price||0 | number:0 }}</span></td>
                             <td><span>{{ data.equipment[name].current_price / data.equipment[name].display_value || 0 | number:0}}</span></td>
                             <td><span>{{ data.equipment[name].upgrade_efficiency||0 | number:0 }}</span></td>
+                            <td><span>{{ data.equipment[name].prestige_surpass||0 }}</span></td>
+                            <td><span>{{ data.equipment[name].prestige_cost||0 | number:0 }}</span></td>
                         </tr>
                     </tbody>
                 </table>
