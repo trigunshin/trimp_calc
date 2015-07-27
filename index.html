@@ -10,7 +10,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.js"></script>
     
     <script src="static/js/lz-string.min.js"></script>
-    <script src="static/js/defaults.js"></script>
+    <!--<script src="static/js/defaults.js"></script>-->
+    <script src="static/js/config.js"></script>
     <script src="static/js/app.js"></script>
 
     <script>
@@ -63,7 +64,7 @@
             <input type="button" value="Import" ng-click="import(save_data)"></input>
         </div>
         <div class='col-md-2'>
-            <span>Supports versions up to 1.06</span>
+            <span>Supports versions up to 1.07</span>
         </div>
     </div>
     <div id='calcs' ng-repeat="pairs in show_items">
@@ -88,7 +89,7 @@
                         </tr>
                     </thead>
                     <tbody id="ancient_table_body">
-                        <tr ng-repeat="name in pairs[1] | filter:data.equipment[name].locked"
+                        <tr ng-repeat="name in pairs[1]"
                         ng-class="data.equipment[name].is_best ? 'success' : ''">
                             <td><span>{{ name }} {{data.equipment[name].prestige||''}} </span></td>
                             <td><span>{{ data.equipment[name].level||0 }}</pan></td>
