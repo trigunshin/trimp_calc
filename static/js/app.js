@@ -13,9 +13,9 @@ clickerCalcs.controller('TrimpCalcCtrl', function($scope) {
 
     $scope.defaults = newGame();
 
-    $scope.base_equipment = defaults.equipment;
-    $scope.base_prestige = defaults.global.prestige;
-    $scope.upgrade_names = defaults.upgrades;
+    $scope.base_equipment = $scope.defaults.equipment;
+    $scope.base_prestige = $scope.defaults.global.prestige;
+    $scope.upgrade_names = $scope.defaults.upgrades;
 
     $scope._get_best_item = function(accum, name) {
         var datum = $scope.data.equipment[name]
