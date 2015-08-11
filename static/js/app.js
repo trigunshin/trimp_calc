@@ -65,7 +65,8 @@ clickerCalcs.controller('TrimpCalcCtrl', function($scope) {
             var prestige_cost = $scope.getNextPrestigeCost(equip_data);
             equip_data.upgrade_efficiency = prestige_cost / prestige_value;
             equip_data.prestige_surpass = Math.ceil(equip_data.display_value * equip_data.level / prestige_value);
-            equip_data.prestige_cost = prestige_cost * equip_data.prestige_surpass;
+            // need to incrementally do this, inaccurate past L1 due to scaling cost
+            // equip_data.prestige_cost = prestige_cost * equip_data.prestige_surpass;
         });
         // calculate the best equipment in their classes
         var best_wep = _.reduce($scope.weapons, $scope._get_best_item, ['', Number.MAX_VALUE], this);
