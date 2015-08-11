@@ -9,16 +9,19 @@ clickerCalcs.controller('TrimpCalcCtrl', function($scope) {
     $scope.weapons = ['Dagger', 'Mace', 'Polearm', 'Battleaxe', 'Greatsword'];
     $scope.armor = ['Boots', 'Helmet', 'Pants', 'Shoulderguards', 'Breastplate'];
     $scope.block = ['Shield'];
+    $scope.population = ['Hut', 'House', 'Mansion', 'Hotel', 'Resort', 'Gateway', 'Wormhole'];
     $scope.show_items = [['Shield', $scope.block], ['Weapons', $scope.weapons], ['Armor', $scope.armor]];
 
     $scope.defaults = newGame();
 
+    $scope.base_buildings = $scope.defaults.buildings;
     $scope.base_equipment = $scope.defaults.equipment;
     $scope.base_prestige = $scope.defaults.global.prestige;
     $scope.upgrade_names = $scope.defaults.upgrades;
 
     $scope._get_best_item = function(accum, name) {
-        var datum = $scope.data.equipment[name]
+        var datum = $scope.data.equipment[name];
+        if(datum.locked === 1 || datum.purchased === 0) return accum;
         var cost_per_val = $scope.data.equipment[name].current_price / $scope.data.equipment[name].display_value;
         if(cost_per_val < accum[1])
             return [name, cost_per_val];
@@ -29,7 +32,7 @@ clickerCalcs.controller('TrimpCalcCtrl', function($scope) {
         if(item.name === 'Shield') resource = 'wood';
         else resource = 'metal';
 
-        return $scope.getItemPrice(item, resource);
+        return $scope.getItemPrice(item, resource, true);
     };
     $scope._get_display_value = function(item) {
         if(item.name === 'Shield') {
@@ -39,6 +42,35 @@ clickerCalcs.controller('TrimpCalcCtrl', function($scope) {
             return item.attackCalculated;
         } else return item.healthCalculated;
     }
+
+    $scope._get_total_building_cost = function(name) {
+        var cur = $scope.data.buildings[name];
+        var costs = _.map(_.keys(cur.cost), function(resource_name) {
+            return parseFloat($scope.getItemPrice(cur, resource_name, false));
+        });
+        return _.sum(costs);
+    };
+
+    $scope._get_best_building = function(accum, name) {
+        var datum = $scope.data.buildings[name];
+        if(datum.locked === 1 || datum.purchased === 0) return accum;
+        var cost_per_val = $scope.data.buildings[name].current_price / $scope.data.buildings[name].increase.by;
+        if(cost_per_val < accum[1])
+            return [name, cost_per_val];
+        else return accum;
+    }
+
+    $scope._import_buildings = function() {
+        _.each($scope.population, function(name) {
+            var cur = $scope.data.buildings[name];
+            var base_data = $scope.base_buildings[name];
+            cur.cost = base_data.cost;
+            cur.current_price = $scope._get_total_building_cost(name);
+        });
+
+        var best_pop = _.reduce($scope.population, $scope._get_best_building, ['', Number.MAX_VALUE], this);
+        $scope.data.buildings[best_pop[0]].is_best = true;
+    };
 
     $scope.import = function(save_data) {
         $scope.data = JSON.parse(LZString.decompressFromBase64(save_data));
@@ -65,20 +97,24 @@ clickerCalcs.controller('TrimpCalcCtrl', function($scope) {
             var prestige_cost = $scope.getNextPrestigeCost(equip_data);
             equip_data.upgrade_efficiency = prestige_cost / prestige_value;
             equip_data.prestige_surpass = Math.ceil(equip_data.display_value * equip_data.level / prestige_value);
-            equip_data.prestige_cost = prestige_cost * equip_data.prestige_surpass;
+            // need to incrementally do this, inaccurate past L1 due to scaling cost
+            // equip_data.prestige_cost = prestige_cost * equip_data.prestige_surpass;
         });
         // calculate the best equipment in their classes
         var best_wep = _.reduce($scope.weapons, $scope._get_best_item, ['', Number.MAX_VALUE], this);
         $scope.data.equipment[best_wep[0]].is_best = true;
         var best_armor = _.reduce($scope.armor, $scope._get_best_item, ['', Number.MAX_VALUE], this);
         $scope.data.equipment[best_armor[0]].is_best = true;
+
+        $scope._import_buildings();
+
         console.log($scope.data);
     };
 
-    $scope.getItemPrice = function(toBuy, costItem) {
+    $scope.getItemPrice = function(toBuy, costItem, is_equipment) {
         if(!toBuy) return 0;
         var price = 0;
-        var compare = "level";
+        var compare = (is_equipment) ? "level" : "purchased";
         var thisCost = toBuy.cost[costItem];
             if (typeof thisCost[1] !== 'undefined'){
                 if (thisCost.lastCheckCount != $scope.data.global.buyAmt || thisCost.lastCheckOwned != toBuy[compare]){

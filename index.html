@@ -64,46 +64,96 @@
             <input type="button" value="Import" ng-click="import(save_data)"></input>
         </div>
         <div class='col-md-2'>
-            <span>Supports versions up to 1.07</span>
+            <span>Supports versions up to 1.09</span>
         </div>
+        <div><a href='https://github.com/trigunshin/trimp_calc'>Github</a></div>
     </div>
-    <div id='calcs' ng-repeat="pairs in show_items">
-        <div class='row'>
-            <div class='col-md-2 col-md-offset-4 text-center'>
-                <h4><strong>{{ pairs[0] }}</strong></h4>
+    <div>
+      <!-- Nav tabs -->
+      <div class='row'>
+        <div class='col-md-offset-2 col-md-2'>
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#equip" aria-controls="equip" role="tab" data-toggle="tab">Equipment</a></li>
+            <li role="presentation"><a href="#population" aria-controls="population" role="tab" data-toggle="tab">Population</a></li>
+          </ul>
+      </div>
+      </div>
+
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="equip">
+            <div id='calcs' ng-repeat="pairs in show_items">
+                <div class='row'>
+                    <div class='col-md-2 col-md-offset-4 text-center'>
+                        <h4><strong>{{ pairs[0] }}</strong></h4>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-md-7 col-md-offset-2'>
+                        <table id="thumb_ancient_tbl" class='table table-condensed'>
+                            <thead>
+                                <tr>
+                                    <th><span>Item Name</span></th>
+                                    <th><span data-toggle="tooltip" data-placement="top" title="Current level.">Level</span></th>
+                                    <th><span data-toggle="tooltip" data-placement="top" title="Next level's value">Value</span></th>
+                                    <th><span data-toggle="tooltip" data-placement="top" title="Next level's cost">Cost</span></th>
+                                    <th><span data-toggle="tooltip" data-placement="top" title="Next level's efficiency">Cost/Value</span></th>
+                                    <th><span data-toggle="tooltip" data-placement="top" title="Upgrade's efficiency.">Upgrade's Cost/Val</span></th>
+                                    <th><span data-toggle="tooltip" data-placement="top" title='When does prestige value surpass current value?'>Target Upgrade Level</abbr></span></th>
+                                    <th><span data-toggle="tooltip" data-placement="top" title='Cost to level upgrade to target.'>Upgrade Leveling Cost</span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="ancient_table_body">
+                                <tr ng-repeat="name in pairs[1]"
+                                ng-class="data.equipment[name].is_best ? 'success' : ''">
+                                    <td><span>{{ name }} {{data.equipment[name].prestige||''}} </span></td>
+                                    <td><span>{{ data.equipment[name].level||0 }}</pan></td>
+                                    <td><span>{{ data.equipment[name].display_value||0 | number:0 }}</pan></td>
+                                    <td><span>{{ data.equipment[name].current_price||0 | number:0 }}</span></td>
+                                    <td><span>{{ data.equipment[name].current_price / data.equipment[name].display_value || 0 | number:0}}</span></td>
+                                    <td><span>{{ data.equipment[name].upgrade_efficiency||0 | number:0 }}</span></td>
+                                    <td><span>{{ data.equipment[name].prestige_surpass||0 }}</span></td>
+                                    <td><span>{{ data.equipment[name].prestige_cost||0 | number:0 }}</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class='row'>
-            <div class='col-md-7 col-md-offset-2'>
-                <table id="thumb_ancient_tbl" class='table table-condensed'>
-                    <thead>
-                        <tr>
-                            <th><span>Item Name</span></th>
-                            <th><span data-toggle="tooltip" data-placement="top" title="Current level.">Level</span></th>
-                            <th><span data-toggle="tooltip" data-placement="top" title="Next level's value">Value</span></th>
-                            <th><span data-toggle="tooltip" data-placement="top" title="Next level's cost">Cost</span></th>
-                            <th><span data-toggle="tooltip" data-placement="top" title="Next level's efficiency">Cost/Value</span></th>
-                            <th><span data-toggle="tooltip" data-placement="top" title="Upgrade's efficiency.">Upgrade's Cost/Val</span></th>
-                            <th><span data-toggle="tooltip" data-placement="top" title='When does prestige value surpass current value?'>Target Upgrade Level</abbr></span></th>
-                            <th><span data-toggle="tooltip" data-placement="top" title='Cost to level upgrade to target.'>Upgrade Leveling Cost</span></th>
-                        </tr>
-                    </thead>
-                    <tbody id="ancient_table_body">
-                        <tr ng-repeat="name in pairs[1]"
-                        ng-class="data.equipment[name].is_best ? 'success' : ''">
-                            <td><span>{{ name }} {{data.equipment[name].prestige||''}} </span></td>
-                            <td><span>{{ data.equipment[name].level||0 }}</pan></td>
-                            <td><span>{{ data.equipment[name].display_value||0 | number:0 }}</pan></td>
-                            <td><span>{{ data.equipment[name].current_price||0 | number:0 }}</span></td>
-                            <td><span>{{ data.equipment[name].current_price / data.equipment[name].display_value || 0 | number:0}}</span></td>
-                            <td><span>{{ data.equipment[name].upgrade_efficiency||0 | number:0 }}</span></td>
-                            <td><span>{{ data.equipment[name].prestige_surpass||0 }}</span></td>
-                            <td><span>{{ data.equipment[name].prestige_cost||0 | number:0 }}</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+        <div role="tabpanel" class="tab-pane" id="population">
+            <div class='row'>
+                <div class='col-md-3 col-md-offset-4 text-center'>
+                    <h4><strong>Population</strong>(no prestiges)</h4>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-md-7 col-md-offset-2'>
+                    <table id="thumb_ancient_tbl" class='table table-condensed'>
+                        <thead>
+                            <tr>
+                                <th><span>Item Name</span></th>
+                                <th><span data-toggle="tooltip" data-placement="top" title="Current level.">Level</span></th>
+                                <th><span data-toggle="tooltip" data-placement="top" title="Next level's value">Value</span></th>
+                                <th><span data-toggle="tooltip" data-placement="top" title="Next level's cost">Cost</span></th>
+                                <th><span data-toggle="tooltip" data-placement="top" title="Next level's efficiency">Cost/Value</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="ancient_table_body">
+                            <tr ng-repeat="name in population"
+                            ng-class="data.buildings[name].is_best ? 'success' : ''">
+                                <td><span>{{ name }} {{data.buildings[name].prestige||''}} </span></td>
+                                <td><span>{{ data.buildings[name].owned||0 }}</pan></td>
+                                <td><span>{{ data.buildings[name].increase.by||0 | number:0 }}</pan></td>
+                                <td><span>{{ data.buildings[name].current_price||0 | number:0 }}</span></td>
+                                <td><span>{{ data.buildings[name].current_price / data.buildings[name].increase.by || 0 | number:0}}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
+      </div>
     </div>
 </body>
 </html>
